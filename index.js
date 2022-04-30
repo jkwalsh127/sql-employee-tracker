@@ -46,18 +46,6 @@ const con = mysql.createConnection(
     {host:'localhost', user: 'root', password: 'password', database: 'company_db'}
   );
 
-// viewDepartments = () => {
-//     return new Promise((resolve, reject) => {
-//         con.query('SELECT * FROM departments', (error, elements) => {
-//             if(error) {
-//                 return reject(error);
-//             }
-//             return resolve(elements);
-//         })
-//     })
-// }
-
-
 function viewDepartments() {
     con.promise().query("SELECT * FROM departments")
         .then( ([rows,fields]) => {
@@ -78,7 +66,10 @@ function viewRoles() {
 
 function viewEmployees() {
     con.promise().query
-    ("SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.department, roles.salary, employees.manager_id FROM employees JOIN roles ON employees.role_id = employees.id")
+    // ("SELECT employees.id, employees.first_name, employees.last_name  FROM employees")
+    // (SELECT departments.name AS department FROM departments JOIN roles ON departments.id = roles.department)
+    ("SELECT e.id, e.first_name AS employee, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id")
+    //  roles.title, roles.department, roles.salary, employees.manager_id FROM employees JOIN roles ON employees.role_id = roles.id")
     .then( ([rows,fields]) => {
         console.table(rows);
     })
