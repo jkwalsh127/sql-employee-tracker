@@ -19,7 +19,7 @@ const addRole = [
     {
         type: 'input',
         message: "What is the role's name?",
-        name: 'roleName'
+        name: 'roleTitle'
     },
     {
         type: 'input',

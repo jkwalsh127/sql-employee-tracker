@@ -73,10 +73,9 @@ function viewEmployees() {
         .then( () => con.end());
 };
 
-function addDepartment(answers) {
+function addDepartment() {
     inquirer.prompt(prompts.addDepartment).then((answers) => {
         let newDepartment = new departmentClass(answers.departmentName);
-        console.log(newDepartment);
         con.promise().query("INSERT INTO departments (name) VALUES (?)", answers.departmentName, (err, result) => {
             if (err) {
                 console.log(err);
@@ -93,13 +92,23 @@ function addDepartment(answers) {
         });
     });
 };
-function addRole(answers) {
-    let newRole = new roleClass(answers.roleName, answers.roleSalary, answers.roleDepartment);
-    db.query("INSERT INTO roles (title, salary, department_id) VALUES (?);", [ answers.roleName, answers.roleSalary, answers.roleDepartment ] , (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        return result;
+function addRole() {
+    inquirer.prompt(prompts.addRole).then((answers) => {
+        let newRole = new roleClass(answers.roleTitle, answers.roleDepartment, answers.roleSalary);
+        con.promise().query("INSERT INTO roles (title, department, salary) VALUES (?)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary], (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            return result;
+        })
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => {
+            console.log(`Added ${answers.roleTitle} to the database`)
+            init();
+        });
     });
 };
 function addEmployee(answers) {
