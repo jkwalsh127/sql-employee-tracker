@@ -1,5 +1,5 @@
 INSERT INTO departments
-(department_name) VALUES
+(name) VALUES
     ("Booking");
 
 INSERT INTO roles

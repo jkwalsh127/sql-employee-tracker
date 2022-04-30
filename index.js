@@ -2,11 +2,12 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const fs = require('fs');
 let prompts = require('./src/prompts');
-const { addDepartment } = require('./src/prompts');
-const departmentClass = require('./lib/departments');
-const roleClass = require('./lib/roles');
-const employeeClass = require('./lib/employees');
-const updateClass = require('./lib/updates');
+const departmentClass = require('./lib/department');
+const roleClass = require('./lib/role');
+const employeeClass = require('./lib/employee');
+const updateClass = require('./lib/update');
+const cTable = require('console.table');
+
 
 /**
  * the initiator function uses inquirer to begin calling the prompts
@@ -41,14 +42,33 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the company_db database.`)
 );
+const con = mysql.createConnection(
+    {host:'localhost', user: 'root', password: 'password', database: 'company_db'}
+  );
+
+// viewDepartments = () => {
+//     return new Promise((resolve, reject) => {
+//         con.query('SELECT * FROM departments', (error, elements) => {
+//             if(error) {
+//                 return reject(error);
+//             }
+//             return resolve(elements);
+//         })
+//     })
+// }
+
 
 function viewDepartments() {
-    db.query("SELECT * FROM department", function (err, results) {
-        return results;
-    });
-}
+    con.promise().query("SELECT * FROM departments")
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => con.end());
+};
+
 function viewRoles() {
-    db.query("SELECT * FROM roles", function (err, results) {
+    db.query("SELECT * FROM department", function (err, results) {
         return results;
     });
 }
