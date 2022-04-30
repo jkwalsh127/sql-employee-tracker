@@ -58,7 +58,14 @@ const addEmployee = [
 
 const updateEmployee = [
     {
-
+        type: 'input',
+        message: "What is the ID of the employee you would like to update?",
+        name: 'employeeID'
+    },
+    {
+        type: 'input',
+        message: "What would you like the employee's new role to be?",
+        name: 'newRole'
     }
 ]
 
@@ -68,5 +75,6 @@ module.exports = {
     initialPrompt: initialPrompt,
     addDepartment: addDepartment,
     addEmployee: addEmployee,
-    addRole: addRole
+    addRole: addRole,
+    updateEmployee: updateEmployee
 };
