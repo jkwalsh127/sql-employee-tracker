@@ -10,7 +10,7 @@ const initialPrompt = [
 const addDepartment = [
     {
         type: 'input',
-        message: "What is the edepartment's name?",
+        message: "What is the department's name?",
         name: 'departmentName'
     }
 ]

@@ -57,38 +57,40 @@ function viewDepartments() {
 
 function viewRoles() {
     con.promise().query("SELECT * FROM roles")
-    .then( ([rows,fields]) => {
-        console.table(rows);
-    })
-    .catch(console.log)
-    .then( () => con.end());
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => con.end());
 };
 
 function viewEmployees() {
-    con.promise().query
-    // ("SELECT employees.id, employees.first_name, employees.last_name  FROM employees")
-
-    // ("SELECT departments.name AS department FROM departments JOIN roles ON departments.id = roles.department")
-    ("SELECT e.id, e.first_name, e.last_name, roles.title, departments.name AS department, roles.salary, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id JOIN roles ON e.role_id = roles.id JOIN departments ON departments.id = roles.department")
-    // roles.title, departments.name, roles.salary, employees.manager_id ")
-
-    // ("SELECT e.id, e.first_name AS employee, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id")
-
-    //  roles.title, roles.department, roles.salary, employees.manager_id FROM employees JOIN roles ON employees.role_id = roles.id")
-    .then( ([rows,fields]) => {
-        console.table(rows);
-    })
-    .catch(console.log)
-    .then( () => con.end());
+    con.promise().query("SELECT e.id, e.first_name, e.last_name, roles.title, departments.name AS department, roles.salary, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id JOIN roles ON e.role_id = roles.id JOIN departments ON departments.id = roles.department")
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => con.end());
 };
 
 function addDepartment(answers) {
-    let newDepartment = new departmentClass(answers.departmentName);
-    db.query("INSERT INTO departments (department_name) VALUES (?);", answers.departmentName, (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        return result;
+    inquirer.prompt(prompts.addDepartment).then((answers) => {
+        let newDepartment = new departmentClass(answers.departmentName);
+        console.log(newDepartment);
+        con.promise().query("INSERT INTO departments (name) VALUES (?)", answers.departmentName, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            return result;
+        })
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => {
+            console.log(`Added ${answers.departmentName} to the database`)
+            init();
+        });
     });
 };
 function addRole(answers) {
