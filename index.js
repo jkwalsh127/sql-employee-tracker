@@ -74,12 +74,17 @@ function viewRoles() {
     })
     .catch(console.log)
     .then( () => con.end());
-}
+};
+
 function viewEmployees() {
-    db.query("SELECT * FROM employees", function (err, results) {
-        return results;
-    });
-}
+    con.promise().query
+    ("SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.department, roles.salary, employees.manager_id FROM employees JOIN roles ON employees.role_id = employees.id")
+    .then( ([rows,fields]) => {
+        console.table(rows);
+    })
+    .catch(console.log)
+    .then( () => con.end());
+};
 
 function addDepartment(answers) {
     let newDepartment = new departmentClass(answers.departmentName);

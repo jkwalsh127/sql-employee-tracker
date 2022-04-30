@@ -1,12 +1,17 @@
 INSERT INTO departments
 (name) VALUES
-    ("Booking");
+    ("Booking"),
+    ("Development");
 
 INSERT INTO roles
-(title, salary, department) VALUES
+(title, department, salary) VALUES
 -- check on using decimals
-    ("engineer", 100000, 1);
+    ("engineer", 2, 100000),
+    ("lead engineer", 2, 150000);
+
 
 INSERT INTO employees
 (first_name, last_name, role_id, manager_id) VALUES
-    ("john", "doe", 1, 2);
+    ("jane", "doe", 2, NULL),
+    ("john", "doe", 1, 1);
+
