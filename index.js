@@ -68,7 +68,9 @@ function viewEmployees() {
     con.promise().query
     // ("SELECT employees.id, employees.first_name, employees.last_name  FROM employees")
 
-    ("SELECT departments.name AS department FROM departments JOIN roles ON departments.id = roles.department")
+    // ("SELECT departments.name AS department FROM departments JOIN roles ON departments.id = roles.department")
+    ("SELECT e.id, e.first_name, e.last_name, roles.title, departments.name AS department, roles.salary, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id JOIN roles ON e.role_id = roles.id JOIN departments ON departments.id = roles.department")
+    // roles.title, departments.name, roles.salary, employees.manager_id ")
 
     // ("SELECT e.id, e.first_name AS employee, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id")
 
