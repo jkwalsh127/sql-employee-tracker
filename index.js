@@ -68,9 +68,12 @@ function viewDepartments() {
 };
 
 function viewRoles() {
-    db.query("SELECT * FROM department", function (err, results) {
-        return results;
-    });
+    con.promise().query("SELECT * FROM roles")
+    .then( ([rows,fields]) => {
+        console.table(rows);
+    })
+    .catch(console.log)
+    .then( () => con.end());
 }
 function viewEmployees() {
     db.query("SELECT * FROM employees", function (err, results) {
