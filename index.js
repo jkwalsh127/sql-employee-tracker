@@ -40,7 +40,6 @@ const db = mysql.createConnection(
       password: 'password',
       database: 'company_db'
     },
-    console.log(`Connected to the company_db database.`)
 );
 const con = mysql.createConnection(
     {host:'localhost', user: 'root', password: 'password', database: 'company_db'}
@@ -111,13 +110,23 @@ function addRole() {
         });
     });
 };
-function addEmployee(answers) {
-    let newEmployee = new employeeClass(answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager);
-    db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?);", [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager ], (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        return result;
+function addEmployee() {
+    inquirer.prompt(prompts.addEmployee).then((answers) => {
+        let newEmployee = new employeeClass(answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager);
+        con.promise().query("INSERT INTO employees (first_name) VALUES (?) INSERT INTO employees (last_name) VALUE (?) INSERT INTO employees VALUE (JOIN roles ON employees.role_id = roles.id)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary], (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            return result;
+        })
+        .then( ([rows,fields]) => {
+            console.table(rows);
+        })
+        .catch(console.log)
+        .then( () => {
+            console.log(`Added ${answers.roleTitle} to the database`)
+            init();
+        });
     });
 };
 function updateRole(answers) {

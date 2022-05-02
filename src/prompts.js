@@ -1,3 +1,18 @@
+const mysql = require('mysql2');
+
+const con = mysql.createConnection(
+    {host:'localhost', user: 'root', password: 'password', database: 'company_db'}
+  );
+
+function departments() {
+    con.query("SELECT name FROM departments", function (err, results) {
+        var here = Object.values(results);
+        console.log(here);
+
+        return here;
+    })
+};
+
 const initialPrompt = [
     {
         type: 'list',
@@ -27,9 +42,10 @@ const addRole = [
         name: 'roleSalary'
     },
     {
-        type: 'input',
+        type: 'list',
         message: "What is the role's department?",
-        name: 'roleDepartment'
+        name: 'roleDepartment',
+        choices: departments()
     }
 ]
 
