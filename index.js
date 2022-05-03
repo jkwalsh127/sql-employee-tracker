@@ -6,8 +6,6 @@ const roleClass = require('./lib/role');
 const employeeClass = require('./lib/employee');
 const updateClass = require('./lib/update');
 const mysql = require('mysql2');
-const cTable = require('console.table');
-
 
 const db = {
     con: mysql.createConnection(
@@ -18,7 +16,7 @@ const db = {
         database: 'company_db'
       }
     )
-  };
+}
 
 async function queryDb(query) {
     try {
@@ -29,24 +27,14 @@ async function queryDb(query) {
       console.error(error);
     }
   }
-
-  async function updateDb(query, answers) {
+  async function queryRoles(query) {
     try {
-      let results = await db.con.promise().query(query, answers);
-        console.log(`${answers} added to the database`)
-        init();
+      let results = await db.con.promise().query(query);
+        console.table(results[0]);
     } catch (error) {
       console.error(error);
     }
   }
-
-function askContinue() {
-  inquirer.prompt(prompts.continue).then( 
-    function confirmed() {
-      init();
-    }
-  )
-};
 
 const queries = {
     viewDepartments: 
@@ -71,13 +59,14 @@ const queries = {
     addRole: 
       async function(answers) {
         let checkRole = new roleClass(answers.roleTitle, answers.roleDepartment, answers.roleSalary);
-        await updateDb("INSERT INTO roles (title, department, salary) VALUES (?)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary])
+        await db.con.promise().query("INSERT INTO roles (title, department, salary) VALUES (?, ?, ?)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary])
+        console.log(`${answers.roleTitle} added to the database`)
         init();
       },
     addEmployee: 
       async function(answers) {
         let newEmployee = new employeeClass(answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager);
-        await db.con.promise().query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?)", [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager])
+        await db.con.promise().query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager])
         console.log(`${answers.employeeFirstName} added to the database`)
         init();
       },
@@ -85,6 +74,7 @@ const queries = {
         async function(answers) {
             let updateRole = new updateClass(answers.newRole, answers.employeeID);
             await db.con.promise().query("UPDATE employees SET role_id = ? WHERE id = ?;", [answers.newRole, answers.employeeID])
+            console.log(`${answers.newRole} added to the database`)
             init();
         }
 }
@@ -152,12 +142,12 @@ function init() {
             },
             {
               type: 'input',
-              message: "What is the employees's role?",
+              message: "What is the ID of the employees's role?",
               name: 'employeeRole'
             },
             {
               type: 'input',
-              message: "Who is the employee's manager?",
+              message: "What is the ID of the employee's manager?",
               name: 'employeeManager'
             }
           ]).then((answers) => {
@@ -172,7 +162,7 @@ function init() {
             },
             {
               type: 'input',
-              message: "What would you like the employee's new role to be?",
+              message: "What is the ID of the employee's new role?",
               name: 'newRole'
             }
           ]).then((answers) => {

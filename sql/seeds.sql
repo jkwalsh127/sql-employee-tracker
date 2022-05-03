@@ -1,6 +1,6 @@
 INSERT INTO departments
 (name) VALUES
-    ("Booking"),
+    ("Marketing"),
     ("Development");
 
 INSERT INTO roles

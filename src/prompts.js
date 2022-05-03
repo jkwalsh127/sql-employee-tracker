@@ -1,12 +1,20 @@
+
 const initialPrompt = [
     {
         type: 'list',
         message: 'What would you like to do?',
         name: 'begin',
-        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role']
+        choices: [
+            'View all employees',
+            'Add an employee',
+            'View all roles',
+            'Add a role', 
+            'Update an employee role',
+            'View all departments',
+            'Add a department'
+        ]
     }
 ]
-
 // , 'Add a department', 'Add a role', 'Add an employee', 
 
 // const addDepartment = [
