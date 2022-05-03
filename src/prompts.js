@@ -1,18 +1,3 @@
-const mysql = require('mysql2');
-
-const con = mysql.createConnection(
-    {host:'localhost', user: 'root', password: 'password', database: 'company_db'}
-  );
-
-function departments() {
-    con.query("SELECT name FROM departments", function (err, results) {
-        var here = Object.values(results);
-        console.log(here);
-
-        return here;
-    })
-};
-
 const initialPrompt = [
     {
         type: 'list',
@@ -30,24 +15,33 @@ const addDepartment = [
     }
 ]
 
-const addRole = [
-    {
-        type: 'input',
-        message: "What is the role's name?",
-        name: 'roleTitle'
-    },
-    {
-        type: 'input',
-        message: "What is the role's salary?",
-        name: 'roleSalary'
-    },
-    {
-        type: 'list',
-        message: "What is the role's department?",
-        name: 'roleDepartment',
-        choices: departments()
-    }
-]
+// const addRole = async () => {
+//     const deps = await con.query("SELECT name FROM departments", function (err, results) {
+//         var here = Object.values(results);
+//         console.log(here);
+//     });
+//     return new Promise( (resolve, reject) => {
+//         inquirer.prompt([
+//             {
+//                 type: 'input',
+//                 message: "What is the role's name?",
+//                 name: 'roleTitle'
+//             },
+//             {
+//                 type: 'input',
+//                 message: "What is the role's salary?",
+//                 name: 'roleSalary'
+//             },
+//             {
+//                 type: 'list',
+//                 message: "What is the role's department?",
+//                 name: 'roleDepartment',
+//                 choices: here
+//             }
+//         ]);
+//     }); .then( ({  }))
+// };
+
 
 const addEmployee = [
     {
@@ -91,6 +85,5 @@ module.exports = {
     initialPrompt: initialPrompt,
     addDepartment: addDepartment,
     addEmployee: addEmployee,
-    addRole: addRole,
     updateEmployee: updateEmployee
 };
