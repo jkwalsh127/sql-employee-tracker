@@ -3,7 +3,7 @@ const initialPrompt = [
         type: 'list',
         message: 'What would you like to do?',
         name: 'begin',
-        choices: ['View all departments', 'View all roles', 'View all employees']
+        choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department']
     }
 ]
 
@@ -81,11 +81,18 @@ const updateEmployee = [
     }
 ]
 
-
+const continuePrompts = [
+    {
+        type: 'confirm',
+        name: 'continue',
+        message: 'Hit enter to continue'
+    }
+]
 
 module.exports = {
     initialPrompt: initialPrompt,
     addDepartment: addDepartment,
     addEmployee: addEmployee,
-    updateEmployee: updateEmployee
+    updateEmployee: updateEmployee,
+    continue: continuePrompts
 };

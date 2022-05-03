@@ -23,24 +23,48 @@ const db = {
 async function queryDb(query) {
     try {
       let results = await db.con.promise().query(query);
-        console.log(results);
+        console.table(results[0]);
+        askContinue();
     } catch (error) {
       console.error(error);
     }
   }
 
+  async function updateDb(query, answers) {
+    try {
+      let results = await db.con.promise().query(query, answers);
+        console.table(results[0]);
+        askContinue();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+function askContinue() {
+  inquirer.prompt(prompts.continue).then( 
+    function confirmed() {
+      init();
+    }
+  )
+};
+
 const queries = {
     viewDepartments: 
-        async function () {
-            await queryDb("SELECT * FROM departments")
+      async function () {
+        await queryDb("SELECT * FROM departments")
       },
     viewRoles: 
-        async function() {
-            await queryDb("SELECT * FROM roles")
+      async function() {
+        await queryDb("SELECT * FROM roles")
       },
     viewEmployees: 
-        async function() {
-            await querydB.promis("SELECT e.id, e.first_name, e.last_name, roles.title, departments.name AS department, roles.salary, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id JOIN roles ON e.role_id = roles.id JOIN departments ON departments.id = roles.department")
+      async function() {
+        await queryDb("SELECT e.id, e.first_name, e.last_name, roles.title, departments.name AS department, roles.salary, m.first_name AS manager FROM employees AS e LEFT JOIN employees AS m ON e.manager_id = m.id JOIN roles ON e.role_id = roles.id JOIN departments ON departments.id = roles.department")
+      },
+    addDepartment: 
+      async function(answers) {
+        let newDepartment = new departmentClass(answers.departmentName);
+        await updateDb("INSERT INTO departments (name) VALUES (?)", answers.departmentName)
       },
     // addDepartment: 
     //     function() {
@@ -133,10 +157,19 @@ function init() {
             return queries.viewRoles();
         } else if (answers.begin === 'View all employees') {
             return queries.viewEmployees();     
-        }
-        // } else if (answers.begin === 'Add a department') {
-        //     return queries.addDepartment(answers);
-        // } else if (answers.begin === 'Add a role') {
+        } else if (answers.begin === 'Add a department') {
+
+            inquirer.prompt([
+              {
+                type: 'input',
+                message: "What is the department's name?",
+                name: 'departmentName'
+              }
+            ]).then((answers) => {
+              return queries.addDepartment(answers);
+            })
+        } 
+        //else if (answers.begin === 'Add a role') {
         //     return queries.addRole(answers);
         // } else if (answers.begin === 'Add an employee') {
         //     return queries.addEmployee(answers);
