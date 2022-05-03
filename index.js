@@ -43,14 +43,6 @@ async function queryDb(query) {
       console.error(error);
     }
   }
-  async function queryRoles(query) {
-    try {
-      let results = await db.con.promise().query(query);
-        console.table(results[0]);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
 const queries = {
     viewDepartments: 
@@ -87,12 +79,12 @@ const queries = {
         init();
       },
     updateRole: 
-        async function(answers) {
-            let updateRole = new updateClass(answers.newRole, answers.employeeID);
-            await db.con.promise().query("UPDATE employees SET role_id = ? WHERE id = ?;", [answers.newRole, answers.employeeID])
-            console.log(`${answers.newRole} added to the database`)
-            init();
-        }
+      async function(answers) {
+        let updateRole = new updateClass(answers.newRole, answers.employeeID);
+        await db.con.promise().query("UPDATE employees SET role_id = ? WHERE id = ?;", [answers.newRole, answers.employeeID])
+        console.log(`${answers.newRole} added to the database`)
+        init();
+     }
 }
 
 /**
