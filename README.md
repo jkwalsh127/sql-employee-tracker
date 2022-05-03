@@ -25,7 +25,7 @@ You can use this application by first installing it on your machine. To install 
 ## Usage
 Using this app is simple. As a back-end application, it occurs completely in the command shell. Before running the application, populate the database by running the command "mysql -u root -p", followed by the password the user uses locally with for SQL, and then copying and pasting the contents of the schema.sql file followed by the seeds.sql file. This creates the database, the tables, and the initial data. From here, use the command "quit" to go back to the main directory. The application can now be initiated by running the command "node index.js", which will show the user the main menu. 
 
-https://user-images.githubusercontent.com/101354032/165249133-217bb3bf-c586-4879-9f0d-4e7d09c19b0d.mp4
+https://user-images.githubusercontent.com/101354032/166419952-40bdc3dd-3f2a-4f2c-b152-83c6eac8f0ca.mp4
 
 ## Credits
 This was a solo project meant to built from scratch, the idea provided by staff at the UC Berkeley full-stack coding bootcamp.
