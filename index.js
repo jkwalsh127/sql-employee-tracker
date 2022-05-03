@@ -1,11 +1,27 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-let prompts = require('./src/prompts');
 const departmentClass = require('./lib/department');
 const roleClass = require('./lib/role');
 const employeeClass = require('./lib/employee');
 const updateClass = require('./lib/update');
 const mysql = require('mysql2');
+
+const initialPrompt = [
+  {
+      type: 'list',
+      message: 'What would you like to do?',
+      name: 'begin',
+      choices: [
+          'View all employees',
+          'Add an employee',
+          'View all roles',
+          'Add a role', 
+          'Update an employee role',
+          'View all departments',
+          'Add a department'
+      ]
+  }
+]
 
 const db = {
     con: mysql.createConnection(
@@ -79,19 +95,12 @@ const queries = {
         }
 }
 
-
-
-
-
-
-
-
 /**
  * the initiator function uses inquirer to begin calling the prompts
  * @returns {function}
  */
 function init() {
-    inquirer.prompt(prompts.initialPrompt).then((answers) => {
+    inquirer.prompt(initialPrompt).then((answers) => {
         if (answers.begin === 'View all departments') {
             return queries.viewDepartments();
         } else if (answers.begin === 'View all roles') {
@@ -147,7 +156,7 @@ function init() {
             },
             {
               type: 'input',
-              message: "What is the ID of the employee's manager?",
+              message: "What is the ID of the employee's manager? (Input 'NULL' if they are the manager)",
               name: 'employeeManager'
             }
           ]).then((answers) => {
