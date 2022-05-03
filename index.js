@@ -24,7 +24,7 @@ async function queryDb(query) {
     try {
       let results = await db.con.promise().query(query);
         console.table(results[0]);
-        askContinue();
+        init();
     } catch (error) {
       console.error(error);
     }
@@ -33,8 +33,8 @@ async function queryDb(query) {
   async function updateDb(query, answers) {
     try {
       let results = await db.con.promise().query(query, answers);
-        console.table(results[0]);
-        askContinue();
+        console.log(`${answers} added to the database`)
+        init();
     } catch (error) {
       console.error(error);
     }
@@ -64,78 +64,29 @@ const queries = {
     addDepartment: 
       async function(answers) {
         let newDepartment = new departmentClass(answers.departmentName);
-        await updateDb("INSERT INTO departments (name) VALUES (?)", answers.departmentName)
+        await db.con.promise().query("INSERT INTO departments (name) VALUES (?)", answers.departmentName)
+        console.log(`${answers.departmentName} added to the database`)
+        init();
       },
-    // addDepartment: 
-    //     function() {
-    //     inquirer.prompt(prompts.addDepartment).then((answers) => {
-    //         let newDepartment = new departmentClass(answers.departmentName);
-    //         con.query("INSERT INTO departments (name) VALUES (?)", answers.departmentName, (err, result) => {
-    //             if (err) {
-    //                 console.log(err);
-    //             }
-    //             return result;
-    //         })
-    //         .then( ([rows,fields]) => {
-    //             console.table(rows);
-    //         })
-    //         .catch(console.log)
-    //         .then( () => {
-    //             console.log(`Added ${answers.departmentName} to the database`)
-    //             init();
-    //         });
-    //     });
-    //   },
-    // addRole: 
-    //     function() {
-    //         inquirer.prompt(prompts.addRole()).then((answers) => {
-    //             let newRole = new roleClass(answers.roleTitle, answers.roleDepartment, answers.roleSalary);
-    //             con.promise().query("INSERT INTO roles (title, department, salary) VALUES (?)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary], (err, result) => {
-    //                 if (err) {
-    //                     console.log(err);
-    //                 }
-    //                 return result;
-    //             })
-    //             .then( ([rows,fields]) => {
-    //                 console.table(rows);
-    //             })
-    //             .catch(console.log)
-    //             .then( () => {
-    //                 console.log(`Added ${answers.roleTitle} to the database`)
-    //                 init();
-    //             });
-    //         });
-    //     },
-    // addEmployee: 
-    //     function() {
-    //         inquirer.prompt(prompts.addEmployee).then((answers) => {
-    //             let newEmployee = new employeeClass(answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager);
-    //             con.promise().query("INSERT INTO employees (first_name) VALUES (?) INSERT INTO employees (last_name) VALUE (?) INSERT INTO employees VALUE (JOIN roles ON employees.role_id = roles.id)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary], (err, result) => {
-    //                 if (err) {
-    //                     console.log(err);
-    //                 }
-    //                 return result;
-    //             })
-    //             .then( ([rows,fields]) => {
-    //                 console.table(rows);
-    //             })
-    //             .catch(console.log)
-    //             .then( () => {
-    //                 console.log(`Added ${answers.roleTitle} to the database`)
-    //                 init();
-    //             });
-    //         });
-    //     },
-    // updateRole: 
-    //     function(answers) {
-    //         let updateRole = new updateClass(answers.newRole, answers.employeeID);
-    //         db.query("UPDATE employees SET role_id = ? WHERE id = ?;", [answers.newRole, answers.employeeID] , (err, result) => {
-    //             if (err) {
-    //                 console.log(err);
-    //             }
-    //             return result;
-    //         });
-    //     }
+    addRole: 
+      async function(answers) {
+        let checkRole = new roleClass(answers.roleTitle, answers.roleDepartment, answers.roleSalary);
+        await updateDb("INSERT INTO roles (title, department, salary) VALUES (?)", [answers.roleTitle, answers.roleDepartment, answers.roleSalary])
+        init();
+      },
+    addEmployee: 
+      async function(answers) {
+        let newEmployee = new employeeClass(answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager);
+        await db.con.promise().query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?)", [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager])
+        console.log(`${answers.employeeFirstName} added to the database`)
+        init();
+      },
+    updateRole: 
+        async function(answers) {
+            let updateRole = new updateClass(answers.newRole, answers.employeeID);
+            await db.con.promise().query("UPDATE employees SET role_id = ? WHERE id = ?;", [answers.newRole, answers.employeeID])
+            init();
+        }
 }
 
 
@@ -158,24 +109,76 @@ function init() {
         } else if (answers.begin === 'View all employees') {
             return queries.viewEmployees();     
         } else if (answers.begin === 'Add a department') {
-
-            inquirer.prompt([
-              {
-                type: 'input',
-                message: "What is the department's name?",
-                name: 'departmentName'
-              }
-            ]).then((answers) => {
-              return queries.addDepartment(answers);
-            })
-        } 
-        //else if (answers.begin === 'Add a role') {
-        //     return queries.addRole(answers);
-        // } else if (answers.begin === 'Add an employee') {
-        //     return queries.addEmployee(answers);
-        // } else if (answers.begin === 'Update an employee role') {
-        //     return queries.updateRole();
-        // }
+          inquirer.prompt([
+            {
+              type: 'input',
+              message: "What is the department's name?",
+              name: 'departmentName'
+            }
+          ]).then((answers) => {
+            return queries.addDepartment(answers);
+          })
+        } else if (answers.begin === 'Add a role') {
+          inquirer.prompt([
+            {
+              type: 'input',
+              message: "What is the role's name?",
+              name: 'roleTitle'
+            },
+            {
+              type: 'input',
+              message: "What is the role's salary?",
+              name: 'roleSalary'
+            },
+            {
+              type: 'input',
+              message: "What is the id of the role's department?",
+              name: 'roleDepartment',
+            }
+          ]).then((answers) => {
+            return queries.addRole(answers);
+          })
+        } else if (answers.begin === 'Add an employee') {
+          inquirer.prompt([
+            {
+              type: 'input',
+              message: "What is the employees's first name?",
+              name: 'employeeFirstName'
+            },
+            {
+              type: 'input',
+              message: "What is the employees's last name?",
+              name: 'employeeLastName'
+            },
+            {
+              type: 'input',
+              message: "What is the employees's role?",
+              name: 'employeeRole'
+            },
+            {
+              type: 'input',
+              message: "Who is the employee's manager?",
+              name: 'employeeManager'
+            }
+          ]).then((answers) => {
+            return queries.addEmployee(answers);
+          })
+        } else if (answers.begin === 'Update an employee role') {
+          inquirer.prompt([
+            {
+              type: 'input',
+              message: "What is the ID of the employee you would like to update?",
+              name: 'employeeID'
+            },
+            {
+              type: 'input',
+              message: "What would you like the employee's new role to be?",
+              name: 'newRole'
+            }
+          ]).then((answers) => {
+            return queries.updateRole(answers);
+          })
+        }
     })
 };
 
