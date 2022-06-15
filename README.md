@@ -2,11 +2,13 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-|   Languages   | Database Management System  |  Node Modules |
-| ----------- | ----------- | ----------- | 
-| ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) | SQL | Inquirer |
-|   |   |  MySQL2 |
-|   |   |  console.table |
+| ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) 
+
+| Database Management System  |  Node Modules |
+| ----------- | ----------- | 
+| SQL | Inquirer |
+|   |  MySQL2 |
+|   |  console.table |
 
 # Table of contents
 * [Description](#description)
